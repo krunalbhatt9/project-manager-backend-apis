@@ -11,6 +11,11 @@ const Project = ProjectModel(sequelize, Sequelize)
 const Task = TaskModel(sequelize, Sequelize)
 
 Project.hasOne(User, {as: 'assigner'})
+Project.hasMany(User, {as: 'assignee'})
+
+Task.hasOne(User, {as: 'assigner'})
+Task.hasMany(User, {as: 'assignee'})
+Task.hasOne(Project)
 
 sequelize.sync({ force: true })
   .then(() => console.log('Database & tables created!'))
@@ -18,5 +23,6 @@ sequelize.sync({ force: true })
 
 module.exports = {
   User,
-  Project
+  Project,
+  Task
 }

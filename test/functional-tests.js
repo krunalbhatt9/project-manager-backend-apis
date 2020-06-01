@@ -30,18 +30,35 @@ describe('application', async () => {
     return res
   }
 
-  async function createRandomProject(axiosClient,projectStatus,assignerName) {
+  async function createRandomProject(axiosClient,projectStatus,assignerId) {
     const randomName= randomString(10)
     const randomBody= randomString(20)
     const newProject = {
       name: randomName,
       body: randomBody,
       status: projectStatus,
-      assignerName: assignerName,
+      assignerId: assignerId,
+      assigneeId: [1,2,3]
     };
     let response = await axiosClient.post('/api/projects', newProject);
     return response;
   }
+  async function createRandomTask(axiosClient,taskStatus,assignerId,projectId) {
+    const randomName= randomString(10)
+    const randomBody= randomString(20)
+    const newTask = {
+      name: randomName,
+      description: randomBody,
+      status: taskStatus,
+      assignerId: assignerId,
+      score: 40,
+      assigneeId: [1,2,3],
+      projectId: projectId
+    };
+    let response = await axiosClient.post('/api/tasks', newTask);
+    return response;
+  }
+
   beforeEach(async () => {
     client = axios.create();
   });
@@ -67,9 +84,19 @@ describe('application', async () => {
     it("Create a new project", async () => {
       const createUserResponse  = await createRandomUser(client)
       console.log( createUserResponse.data);
-      const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.name)
+      const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.id)
       console.log( createProjectResponse.data);
       assert.strictEqual(createProjectResponse.status, 200);   
+     }).timeout(100000);
+     
+     it("Create a new task", async () => {
+      const createUserResponse  = await createRandomUser(client)
+      console.log( createUserResponse.data);
+      const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.id)
+      console.log( createProjectResponse.data);
+      const  createTaskResponse = await createRandomTask(client, "active",createUserResponse.data.id,createProjectResponse.data.id)
+      console.log( createTaskResponse.data);
+      assert.strictEqual(createTaskResponse.status, 200);   
      }).timeout(100000);
   });
 });
