@@ -7,6 +7,7 @@ To run in docker
 
 To run tests, in a seperate terminal: 
 
+    npm install
     npm run test
 
 Rest APIs to create and get Users, projects and tasks
