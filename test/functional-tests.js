@@ -67,36 +67,36 @@ describe('application', async () => {
   
   });
   describe('sanity', async () => {
-    // it('can successfully send an index', async () => {
-    //   const result = await client.get('/api/users');
-    //   console.log(result.data)
-    //   assert.strictEqual(result.status, 200);
-    // });
-    // it("doesn't send files that don't exist", async () => {
-    //     const result = await client.get('doesnotexist');
-    //     assert.strictEqual(result.status, 404);
-    // });
-    // it("Create a new user", async () => {
-    //     let res = await createRandomUser(client)
-    //     //console.log(res)
-    //     assert.strictEqual(res.status, 200);
-    // });
+    it('can successfully send an index', async () => {
+      const result = await client.get('/api/users');
+      //console.log(result.data)
+      assert.strictEqual(result.status, 200);
+    });
+    it("doesn't send files that don't exist", async () => {
+        const result = await client.get('doesnotexist');
+        assert.strictEqual(result.status, 404);
+    });
+    it("Create a new user", async () => {
+        let res = await createRandomUser(client)
+        //console.log(res)
+        assert.strictEqual(res.status, 200);
+    });
     it("Create a new project", async () => {
       const createUserResponse  = await createRandomUser(client)
-      console.log( createUserResponse.data);
+      //console.log( createUserResponse.data);
       const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.id)
-      console.log( createProjectResponse.data);
+      //console.log( createProjectResponse.data);
       assert.strictEqual(createProjectResponse.status, 200);   
-     }).timeout(100000);
+     });
      
      it("Create a new task", async () => {
       const createUserResponse  = await createRandomUser(client)
-      console.log( createUserResponse.data);
+      //console.log( createUserResponse.data);
       const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.id)
-      console.log( createProjectResponse.data);
+      //console.log( createProjectResponse.data);
       const  createTaskResponse = await createRandomTask(client, "active",createUserResponse.data.id,createProjectResponse.data.id)
-      console.log( createTaskResponse.data);
+      //console.log( createTaskResponse.data);
       assert.strictEqual(createTaskResponse.status, 200);   
-     }).timeout(100000);
+     });
   });
 });
