@@ -1,12 +1,22 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize')
+const UserModel = require('./user.model')
+const ProjectModel = require('./project.model')
+const TaskModel = require('./task.model')
 
 const sequelize = new Sequelize('postgres://user:pass@postgres:5432/db');
-
-const db = {};
 sequelize.authenticate().then(function(errors) { console.log(errors) });
 
+const User = UserModel(sequelize, Sequelize)
+const Project = ProjectModel(sequelize, Sequelize)
+const Task = TaskModel(sequelize, Sequelize)
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+Project.hasOne(User, {as: 'assigner'})
 
-module.exports = db;
+sequelize.sync({ force: true })
+  .then(() => console.log('Database & tables created!'))
+  .catch (err => console.log('Error'+ err))
+
+module.exports = {
+  User,
+  Project
+}

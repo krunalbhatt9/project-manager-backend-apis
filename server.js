@@ -1,24 +1,14 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-
 const app = express();
 
-const db = require("./app/models");
+var indexRouter = require('./app/routes/index');
 
-db.sequelize.sync();
+// // simple route
+// app.get("/", (req, res) => {
+//   res.json({ message: "Hello World." });
+// });
 
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World." });
-});
-
+app.use("/", indexRouter);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

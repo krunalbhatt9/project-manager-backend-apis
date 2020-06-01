@@ -1,6 +1,5 @@
 const assert = require('assert');
 const axios = require('axios').default;
-//var baseUrl = "http://localhost:3000"
 
 describe('application', async () => {
 
@@ -9,57 +8,68 @@ describe('application', async () => {
   axios.defaults.baseURL = `http://localhost:3000/`;
   axios.defaults.validateStatus = () => true;
 
-  const psrand = (() => {
-    let seed = 0xaabbccd;
-    return () => {
-
-      seed = (seed + 0x7ed55d16 + (seed << 12)) & 0xffffffff;
-      seed = (seed ^ 0xc761c23c ^ (seed >>> 19)) & 0xffffffff;
-      seed = (seed + 0x165667b1 + (seed << 5)) & 0xffffffff;
-      seed = ((seed + 0xd3a2646c) ^ (seed << 9)) & 0xffffffff;
-      seed = (seed + 0xfd7046c5 + (seed << 3)) & 0xffffffff;
-      seed = (seed ^ 0xb55a4f09 ^ (seed >>> 16)) & 0xffffffff;
-      return (seed & 0xfffffff) / 0x10000000;
-    
-    };
-  })();
-
-  function getRandomString(length) {
-    let s = '';
-    do {
-      s += psrand()
-        .toString(36)
-        .substr(2);
-    } while (s.length < length);
-    s = s.substr(0, length);
-    return s;
+  function randomString(length) {
+    let result = '';
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
   async function createRandomUser(axiosClient) {
+    const randomName= randomString(10)
+    const randomSurname= randomString(10)
     const newUser = {
-      username: getRandomString(10),
-      password: getRandomString(10),
-      number: Math.floor(psrand() * 100),
+      name: randomName,
+      surname: randomSurname,
+      email: randomName + "@email.com",
     };
-    const response = await axiosClient.post('/register', newUser);
-    return { newUser, response };
+    let res = await axiosClient.post('/api/users', newUser)
+    return res
+  }
+
+  async function createRandomProject(axiosClient,projectStatus,assignerName) {
+    const randomName= randomString(10)
+    const randomBody= randomString(20)
+    const newProject = {
+      name: randomName,
+      body: randomBody,
+      status: projectStatus,
+      assignerName: assignerName,
+    };
+    let response = await axiosClient.post('/api/projects', newProject);
+    return response;
   }
   beforeEach(async () => {
     client = axios.create();
-  
   });
 
   afterEach(async () => {
   
   });
   describe('sanity', async () => {
-    it('can successfully send an index', async () => {
-      const result = await client.get('/');
-      console.log(result.data)
-      assert.strictEqual(result.status, 200);
-    });
-    it("doesn't send files that don't exist", async () => {
-        const result = await client.get('doesnotexist');
-        assert.strictEqual(result.status, 404);
-      });
-    });
+    // it('can successfully send an index', async () => {
+    //   const result = await client.get('/api/users');
+    //   console.log(result.data)
+    //   assert.strictEqual(result.status, 200);
+    // });
+    // it("doesn't send files that don't exist", async () => {
+    //     const result = await client.get('doesnotexist');
+    //     assert.strictEqual(result.status, 404);
+    // });
+    // it("Create a new user", async () => {
+    //     let res = await createRandomUser(client)
+    //     //console.log(res)
+    //     assert.strictEqual(res.status, 200);
+    // });
+    it("Create a new project", async () => {
+      const createUserResponse  = await createRandomUser(client)
+      console.log( createUserResponse.data);
+      const  createProjectResponse = await createRandomProject(client, "active",createUserResponse.data.name)
+      console.log( createProjectResponse.data);
+      assert.strictEqual(createProjectResponse.status, 200);   
+     }).timeout(100000);
+  });
 });

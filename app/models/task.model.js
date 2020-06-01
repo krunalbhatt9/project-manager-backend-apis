@@ -1,15 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
-    const Project = sequelize.define('project', {
+    const Task = sequelize.define('task', {
         id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
         },
         name: DataTypes.STRING,
-        body: {
+        description: {
           type: DataTypes.TEXT,
           allowNull: false
         },
+        score: DataTypes.INTEGER,
         status: DataTypes.ENUM(
           'active','inactive', 'declined', 'completed'
           ),
@@ -19,6 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     );
   
-        
-      return Project;
+ 
+      return Task;
   }
